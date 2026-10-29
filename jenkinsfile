@@ -24,11 +24,13 @@ pipeline{
         }
         stage('Build image'){
             steps{
-                sh 'docker build -t myapp:latest .'
+                sh 'docker build -t zaidkhann/myapp:latest .'
             }
 
         }
         stage('Registry login & push'){
+
+            steps{
 
             withCredentials([
                 usernamePassword(
@@ -43,9 +45,14 @@ pipeline{
                     --username "$DOCKER_USER" \
                     --password-stdin
             '''
-            sh "docker push myapp:latest"
+            sh '''
+            docker push zaidkhann/myapp:latest
+            docker logout
+            
+            '''
         }
 
+        }
         }
         stage('Remote deployment'){
             steps{
@@ -64,8 +71,6 @@ pipeline{
                         --restart unless-stopped \
                         -p 3000:3000 \
                         zaidkhann/myapp:latest
-
-                    docker ps --filter name=myapp
                 '
                 '''
                 }
