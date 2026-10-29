@@ -60,18 +60,19 @@ pipeline{
                     sh '''
                 set -eu
 
-                ssh -o StrictHostKeyChecking=no ubuntuserver@192.168.1.7 '
-                set -eu
-                docker pull zaidkhann/myapp:latest
-                docker stop myapp 2>/dev/null || true
-                docker rm myapp 2>/dev/null || true
-
-                docker run -d \
-                        --name myapp \
-                        --restart unless-stopped \
-                        -p 3000:3000 \
-                        zaidkhann/myapp:latest
-                '
+                ssh -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    ubuntuserver@192.168.1.7 '
+    set -eu
+    docker pull zaidkhann/myapp:latest
+    docker stop myapp 2>/dev/null || true
+    docker rm myapp 2>/dev/null || true
+    docker run -d \
+        --name myapp \
+        --restart unless-stopped \
+        -p 3000:3000 \
+        zaidkhann/myapp:latest
+'
                 '''
                 }
             }
